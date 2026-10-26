@@ -1,2 +1,2 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Preserve submission bytes exactly; all text files ship with LF line endings.
+* -text
