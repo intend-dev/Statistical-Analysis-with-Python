@@ -80,10 +80,11 @@ The data appear top-coded at `90` (respondents beyond the cap recorded as `90`),
 
 **Figure 2.** Hours worked per week by income bracket.
 
-Figure 2 shows how hours split across income. Both groups share the median of
-`40` hours, but the over-$50K group's quartiles sit higher overall (lower
-quartile `40` against `35`, upper quartile `50` against `40`), and `49.2%` of
-that group works past `40` hours against `23.2%`.
+Figure 2 compares how weekly hours are spread between the two income groups.
+
+- **Median:** `40` hours in both groups.
+- **Middle range:** `40` to `50` hours in the over-$50K group, compared with `35` to `40` hours in the at-or-below-$50K group.
+- **Past `40` hours:** `49.2%` in the over-$50K group, compared with `23.2%` in the at-or-below-$50K group.
 
 ![Share earning over $50K by sex.](figures/figure-3-income-by-sex.png)
 
@@ -97,27 +98,19 @@ question. `30.57%` of men earn over $50K against `10.95%` of women, a gap of
 
 **Figure 4.** Correlation heatmap of the numeric variables.
 
-The pairwise correlations among the plotted numeric variables are all weak,
-the largest `0.1481` between `education-num` and `hours-per-week`, so the
-numeric variables do not move together much. That says nothing about their
-link to `income`, which is categorical and outside the matrix; Figure 2 shows
-that at least one numeric variable (hours) tracks income. The matrix also
-leaves out `fnlwgt`, a census sampling weight rather than a measured
-attribute, and carries two heavily zero-inflated columns (`91.67%` of
-`capital-gain` and `95.33%` of `capital-loss` are `0`), so those correlations
-are near-degenerate.
+Figure 4 shows how the plotted numeric variables move together.
 
-The chi-square test of independence gives a Pearson statistic of `1518.8868`
-(the Yates-corrected value is `1517.8134`) with `1` degree of freedom. The
-exact p-value underflows double precision, so the notebook reports its order
-of magnitude, about `1e-332` (below `1e-300`). The smallest expected count is
-`2593.76`, so the approximation is safe. Because the p-value is far below the
-threshold, I reject the null hypothesis of independence.
+- `education-num` and `hours-per-week` are the strongest link: `0.1481`.
+- `income` is categorical and outside the matrix, so this view does not directly answer the income question.
+- `fnlwgt` is omitted because it is a census sampling weight, not a measured attribute.
+- `capital-gain` and `capital-loss` are mostly zeros (`91.67%` and `95.33%`), so their correlations are near-degenerate.
 
-The effect size is Cramér's V of `0.2160`, computed from the uncorrected
-Pearson statistic, a small-to-moderate association. For a two-by-two table
-Cramér's V equals phi, so V squared (`0.0466`, about `4.7%`) is the ratio of
-the chi-square statistic to the sample size.
+The chi-square test rejects independence.
+
+- Pearson statistic: `1518.8868`; Yates-corrected: `1517.8134`; degrees of freedom: `1`.
+- p-value: about `1e-332`, far below `1e-300`.
+- Smallest expected count: `2593.76`, so the approximation is safe.
+- Effect size: Cramér's V `0.2160`; V squared `0.0466` (`4.7%`).
 
 The contingency table is:
 
@@ -126,11 +119,10 @@ The contingency table is:
 | Female | `9,592` | `1,179` |
 | Male | `15,128` | `6,662` |
 
-The gap in the over-$50K rate is `19.63` percentage points, with a 95%
-confidence interval of `[18.78, 20.48]` from the normal approximation for a
-difference in proportions. That interval assumes independent observations, so
-the household clustering noted in the Methods makes it approximate, exactly as
-it does the p-value.
+The gap in the over-$50K rate is `19.63` percentage points. A normal-approximation
+`95%` confidence interval spans `[18.78, 20.48]`. That interval, like the
+p-value, assumes independent observations, so the household clustering noted in
+the Methods makes both approximate.
 
 ## Interpretation for a Non-Technical Audience
 
@@ -151,37 +143,17 @@ section lists the other differences between the groups and the other caveats.
 
 ## Limitations and Potential Bias
 
-The first limitation is that the data are observational. Nobody was assigned
-to be a man or a woman, so I can report an association between sex and income
-but not a cause. Unmeasured factors that differ between the groups, such as
-occupation, education, hours, and access to certain jobs, could contribute to
-the gap.
+This is an observational comparison, so the result is an association, not proof
+of sex causing the difference.
 
-The second limitation is the age and scope of the data. The `32,561` records
-come from a `1994` U.S. Census extract rather than a current or random sample
-of a defined population, so the gap is a property of this sample and may not
-generalize. The income target is also a nominal $50K cut in `1994` dollars
-with no inflation adjustment. `sex` is coded as a binary Male/Female field,
-which bounds how far the fairness discussion can go.
+The `1994` U.S. Census extract and its undocumented sampling design limit how
+far the result generalizes. The $50K threshold is nominal and not
+inflation-adjusted, and `sex` is recorded as a binary field.
 
-The main potential source of bias is the missing and self-reported data. The
-three columns with missing values (the counts are in the Dataset Description)
-may be missing for reasons tied to income or sex, in which case the comparison
-is biased. The kept `24` duplicates and the household clustering behind the
-`relationship` field raise the same independence worry: the observations are
-not all distinct draws, so the p-value and the confidence interval read as
-approximate.
-
-The result also carries a misuse risk. It describes `1994` census data and
-says nothing about any individual's ability or potential. Using a demographic
-attribute such as `sex` for income, credit, or hiring decisions raises equity
-and privacy questions, so a difference between group rates is not, on its own,
-a justification for treating individuals differently.
-
-As a next step, a follow-up analysis could adjust for confounding by modeling
-income on sex together with `education-num`, `occupation`, and
-`hours-per-week`. A newer dataset could show how much of the gap persists
-today.
+Missingness in three columns and the possibility of household-linked rows make
+the observed rates, p-value, and confidence interval approximate. A follow-up
+model using `education-num`, `occupation`, and `hours-per-week`, while
+accounting for those issues, would be a useful next step.
 
 ## References
 
