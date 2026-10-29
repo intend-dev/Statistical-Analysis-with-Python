@@ -6,58 +6,64 @@
 
 I analyzed the UCI Adult (Census Income) dataset (Becker & Kohavi, `1996`) to test whether sex is associated with earning over $50K.
 The dataset is publicly available at https://archive.ics.uci.edu/dataset/2/adult.
-Of its `32,561` records, `7,841` (`24.08%`) sit over the $50K line.
+`7,841` of its `32,561` records (`24.08%`) earn over $50K.
 
 This report covers the descriptive statistics, four visual models, and one chi-square test of independence.
-The result of this analysis points to a clear discrepancy between men and women: men in this data earn over $50K far more often than women, `30.57%` against `10.95%`.
-The chi-square test attributes the gap to far more than sampling noise, with a p-value of about `1e-332`.
+The result is a clear difference between men and women: men in this data earn over $50K far more often than women, `30.57%` against `10.95%`.
+The chi-square test says the gap is far too large to be sampling noise alone, with a p-value of about `1e-332`.
 The effect size, Cramér's V, is `0.2160`, a small-to-moderate association.
 
 ## Dataset Description
 
 As noted in the Overview, the analysis uses the UCI Adult training extract (Becker & Kohavi, `1996`).
 It is a real public extract of the `1994` U.S. Census, hosted by the UCI Machine Learning Repository.
-Each row is one person, and `income` is the binary target of whether that person earns over $50K per year.
+Each row is one person. The `income` column records whether that person earns over $50K per year.
 
 The table has `15` columns and `32,561` rows: `6` are numeric (`age`, `fnlwgt`, `education-num`, `capital-gain`, `capital-loss`, and `hours-per-week`) and `9` are categorical.
-The test rests on the categorical pair `sex` and `income`, and the descriptive work follows the two numeric variables most relevant to the outcome, `age` and `hours-per-week`.
+The test uses the two categorical columns, `sex` and `income`. The descriptive statistics follow `age` and `hours-per-week`, the two numeric columns most relevant to the outcome.
 
 Three columns carry missing values (`workclass` `1,836`, `occupation` `1,843`, and `native-country` `583`, `4,262` cells in total).
 I keep the missing values in place, because data cleanup is not the purpose of this project.
 The `sex` and `income` columns are complete: all `32,561` rows carry a recorded value for both.
-The test below therefore uses every row, and the missing cells in the other columns play no part in it.
+The test below therefore uses every row. The missing cells in the other columns do not affect it.
 
 The load check also flags `24` exact duplicate rows. I keep them, because a census extract can legitimately hold two people with identical recorded attributes.
-One caution applies further down: the source is a household survey, and the `relationship` field lists husband, wife, and own-child entries, so the rows may not be independent.
+One caution comes up later in the report: the source is a household survey, and the `relationship` field lists husband, wife, and own-child entries, so the rows may not be independent.
 
 ## Methods
 
-Lusa et al. (`2024`) set out the initial-data-analysis steps that should precede inference: data cleaning, a review of the missing values, and checks on the distribution and shape of each variable.
-The argument is written for longitudinal studies, but the steps apply to any dataset.
-Cleanup stays out of scope, which the Dataset Description records, so the screening before any test reduces to two steps: the load check covers the column types, the missing values, and the duplicates, and the descriptive statistics run the shape checks on `age` and `hours-per-week`.
-That screening is the full data preparation, and its results shaped the choices below: a right-skewed `age` and two unbalanced variables (`income` and `sex`).
+Lusa et al. (`2024`) described the initial data analysis steps that should come before inference: data cleaning, a review of the missing values, and checks on the distribution and shape of each variable.
+It's main argument is written for longitudinal studies, but the steps mentions can be applied to to any dataset.
+An important notice to mention is that data cleanup needs to stay out of scope, as it was mentioned previously.
+Before the test, two checks make up the initial screening.
+The first one is load check that reports the column types, the missing values, and the duplicate rows.
+The second one is descriptive statistics that show the shape of `age` and `hours-per-week`.
+Those two checks are the whole data preparation for this project, and with them it was possible to observe that the dataset has a right-skewed `age` and two unbalanced variables (`income` and `sex`).
 
-For the question itself I use a chi-square test of independence.
+For the question itself I used a chi-square test of independence.
 The question asks whether `sex` and `income` are associated rather than how much one predicts the other.
-Both variables are categorical, which is exactly what the test expects.
-The p-values come from a standard approximation that is only reliable when the expected counts are large (Agresti, `2007`), and the expected counts here (checked in the Results) sit far above that level.
+Both of these variables are categorical, which is exactly what the test expects.
+The p-values came from a standard approximation that is reliable only when the expected counts are large (Agresti, `2007`).
+As the results show, the expected counts are far above that level. 
 
 The null hypothesis (H0) is that `sex` and `income` are independent.
-The alternative (H1) is that they are associated. I fixed the significance level at alpha = `0.05` before the test.
+The alternative (H1) is that they are associated, and I fixed the significance level at alpha = `0.05` before the test.
 
-A chi-square test is non-directional: it can say whether an association exists, not which way it runs, so I read the direction of the difference from the observed counts and rates rather than expecting the test to supply them.
-A second assumption is that every row is a separate observation.
-That one is not fully true here: the source is a household survey, records can share a household, and the p-value therefore reads only as approximate (Agresti, `2007`).
-The Limitations section takes up that concern.
+A chi-square test is non-directional: it can say whether an association exists, but not which way it runs, for this reason I read the direction from the observed counts and rates instead.
+
+A second assumption is that every row is a separate observation, this assumption however not fully true here as the source is a household survey, and records can share a household, therefore for the p-value is only approximate (Agresti, `2007`), the Limitations section returns to this concern.
 
 SciPy's `chi2_contingency` applies the Yates correction by default to a two-by-two table.
-I report the uncorrected Pearson statistic (the effect size builds on it) and note the corrected value in the Results.
+I reported the uncorrected Pearson statistic and noted the corrected value in the Results.
+The effect size uses the uncorrected statistic.
 As an effect size I report Cramér's V, a `0`-to-`1` measure of the strength of an association (Ben-Shachar et al., `2023`).
-The p-value alone does not show that strength and is easy to misread as the probability that the null hypothesis is true, so the p-value and the effect size travel together (Greenland et al., `2016`).
+The p-value alone does not show that strength, and it is easy to misread as the probability that the null hypothesis is true.
+I therefore report the p-value and the effect size together (Greenland et al., `2016`).
 
 All computations used Python `3.12.14` with pandas `3.0.6`, NumPy `2.5.3`, and SciPy `1.18.1` (Virtanen et al., `2020`), and the figures used Matplotlib `3.11.2` and Seaborn `0.13.2`.
 The notebook runs top to bottom from a clean kernel, writes the four figures itself, and prints every number the report quotes.
-`requirements.txt` pins the exact package versions, and the notebook's Reproducibility section documents the whole rebuild with `uv` step by step, from the environment creation through the executed notebook.
+`requirements.txt` pins the exact package versions.
+The notebook's Reproducibility section walks through the whole rebuild with `uv`, step by step.
 
 ## Results
 
@@ -72,7 +78,7 @@ The descriptive statistics show the shape and balance of the four relevant varia
 
 **Figure 1.** Distribution of age, showing the right skew.
 
-The curve in Figure 1 falls the way the skewness number predicts, but the last populated bin needs its own reading.
+The curve in Figure 1 falls the way the skewness number predicts, but the last populated bin needs a separate explanation.
 The notebook's supporting counts show it holds `47` records, with `43` at the `90` cap, `3` at `88`, and `1` at `87`.
 The data appear top-coded at `90` (respondents beyond the cap recorded as `90`), so that bump reflects the cap rather than a natural peak of older respondents.
 
@@ -98,12 +104,12 @@ question. `30.57%` of men earn over $50K against `10.95%` of women, a gap of
 
 **Figure 4.** Correlation heatmap of the numeric variables.
 
-Figure 4 shows how the plotted numeric variables move together.
+Figure 4 shows the correlations among the plotted numeric variables.
 
 - `education-num` and `hours-per-week` are the strongest link: `0.1481`.
 - `income` is categorical and outside the matrix, so this view does not directly answer the income question.
 - `fnlwgt` is omitted because it is a census sampling weight, not a measured attribute.
-- `capital-gain` and `capital-loss` are mostly zeros (`91.67%` and `95.33%`), so their correlations are near-degenerate.
+- `capital-gain` and `capital-loss` are mostly zeros (`91.67%` and `95.33%`), so their correlations are not informative.
 
 The chi-square test rejects independence.
 
@@ -129,13 +135,13 @@ women, a gap of about `19.63` percentage points.
 
 A gap of `19.63` points in a sample of `32,561` would almost never appear by
 chance if sex and income were unrelated, and the chi-square test confirms the
-gap (p about `1e-332`). The effect size adds the scale: `0.2160` is a
+gap (p about `1e-332`). The effect size shows how strong the association is: `0.2160` is a
 small-to-moderate value on the `0`-to-`1` scale, and sex alone explains only
-about `4.7%` of the variation in who is above the line. Sex is one of many
-differences between the two groups, not the whole of the difference.
+about `4.7%` of the variation in who is above the line. Sex is part of the
+difference, not all of it.
 
 The result is an association, not proof that sex caused the difference in
-earnings, and it is tied to `1994` and to the United States. The Limitations
+earnings, and it applies to the `1994` United States data. The Limitations
 section lists the other differences between the groups and the other caveats.
 
 ## Limitations and Potential Bias
@@ -147,10 +153,10 @@ The `1994` U.S. Census extract and its undocumented sampling design limit how
 far the result generalizes. The $50K threshold is nominal and not
 inflation-adjusted, and `sex` is recorded as a binary field.
 
-Missingness in three columns and the possibility of household-linked rows make
+Missing values in three columns and the possibility of household-linked rows make
 the observed rates, p-value, and confidence interval approximate. A follow-up
-model using `education-num`, `occupation`, and `hours-per-week`, while
-accounting for those issues, would be a useful next step.
+model using `education-num`, `occupation`, and `hours-per-week`, accounting
+for those issues, would be a useful next step.
 
 ## References
 
