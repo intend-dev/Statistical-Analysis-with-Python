@@ -1,9 +1,9 @@
-# MS-09-CAP-03-SA: Income and Sex in the UCI Adult Data
+# Statistical Analysis with Python: Income and Sex in the UCI Adult Data
 
 ## Overview
 
 I analyzed the UCI Adult (Census Income) dataset (Becker & Kohavi, `1996`) to test whether sex is associated with earning over $50K.
-Repository: https://github.com/intend-dev/MS-09-CAP-03-SA
+Repository: https://github.com/intend-dev/Statistical-Analysis-with-Python
 
 ## Repository
 
