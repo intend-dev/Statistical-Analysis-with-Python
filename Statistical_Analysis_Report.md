@@ -32,33 +32,54 @@ One caution comes up later in the report: the source is a household survey, and 
 
 ## Methods
 
-Lusa et al. (`2024`) described the initial data analysis steps that should come before inference: data cleaning, a review of the missing values, and checks on the distribution and shape of each variable.
-It's main argument is written for longitudinal studies, but the steps mentions can be applied to to any dataset.
-An important notice to mention is that data cleanup needs to stay out of scope, as it was mentioned previously.
-Before the test, two checks make up the initial screening.
-The first one is load check that reports the column types, the missing values, and the duplicate rows.
-The second one is descriptive statistics that show the shape of `age` and `hours-per-week`.
-Those two checks are the whole data preparation for this project, and with them it was possible to observe that the dataset has a right-skewed `age` and two unbalanced variables (`income` and `sex`).
+### The initial screening
 
-For the question itself I used a chi-square test of independence.
-The question asks whether `sex` and `income` are associated rather than how much one predicts the other.
-Both of these variables are categorical, which is exactly what the test expects.
-The p-values came from a standard approximation that is reliable only when the expected counts are large (Agresti, `2007`).
-As the results show, the expected counts are far above that level. 
+Lusa et al. (`2024`) describes the initial data analysis steps that should come before inference: data cleaning, a review of the missing values, and checks on the distribution and shape of each variable.
+The argument is written for longitudinal studies, but these steps apply to this dataset.
+ > Note: Data cleanup stays out of scope, as the Dataset Description notes.
 
-The null hypothesis (H0) is that `sex` and `income` are independent.
-The alternative (H1) is that they are associated, and I fixed the significance level at alpha = `0.05` before the test.
+Before the test, two checks make up the initial screening:
 
-A chi-square test is non-directional: it can say whether an association exists, but not which way it runs, for this reason I read the direction from the observed counts and rates instead.
+- The load check reports the column types, the missing values, and the duplicate rows.
+- The descriptive statistics show the shape of `age` and `hours-per-week`.
 
-A second assumption is that every row is a separate observation, this assumption however not fully true here as the source is a household survey, and records can share a household, therefore for the p-value is only approximate (Agresti, `2007`), the Limitations section returns to this concern.
+Those two checks are the whole data preparation for this project.
+They showed a right-skewed `age` and two unbalanced variables: `income` and `sex`.
+
+### The hypothesis test
+
+For the question itself I use a chi-square test of independence.
+The question asks whether `sex` and `income` are associated, not how much one predicts the other.
+Both variables are categorical, which is exactly what the test expects.
+The p-values come from a standard approximation that is reliable only when the expected counts are large (Agresti, `2007`).
+The expected counts here are far above that level, as the Results show.
+
+The hypotheses and the significance level:
+
+- The null hypothesis (H0): `sex` and `income` are independent.
+- The alternative hypothesis (H1): `sex` and `income` are associated.
+- The significance level: alpha = `0.05`, fixed before the test.
+
+### Direction and assumptions
+
+A chi-square test is non-directional: it can say whether an association exists, but not which way it runs.
+I read the direction from the observed counts and rates instead.
+
+A second assumption is that every row is a separate observation.
+That is not fully true here: the source is a household survey, and records can share a household.
+The p-value is therefore approximate (Agresti, `2007`).
+The Limitations section returns to this concern.
+
+### The correction and the effect size
 
 SciPy's `chi2_contingency` applies the Yates correction by default to a two-by-two table.
-I reported the uncorrected Pearson statistic and noted the corrected value in the Results.
+I report the uncorrected Pearson statistic and note the corrected value in the Results.
 The effect size uses the uncorrected statistic.
 As an effect size I report Cramér's V, a `0`-to-`1` measure of the strength of an association (Ben-Shachar et al., `2023`).
 The p-value alone does not show that strength, and it is easy to misread as the probability that the null hypothesis is true.
 I therefore report the p-value and the effect size together (Greenland et al., `2016`).
+
+### Tools and reproducibility
 
 All computations used Python `3.12.14` with pandas `3.0.6`, NumPy `2.5.3`, and SciPy `1.18.1` (Virtanen et al., `2020`), and the figures used Matplotlib `3.11.2` and Seaborn `0.13.2`.
 The notebook runs top to bottom from a clean kernel, writes the four figures itself, and prints every number the report quotes.
