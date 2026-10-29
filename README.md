@@ -1,83 +1,40 @@
-# MS-09-CAP-03-SA
-
-> **Status:** [![Project Board](https://img.shields.io/badge/progress-board-blue)](https://github.com/users/intend-dev/projects/<id>)
+# MS-09-CAP-03-SA: Income and Sex in the UCI Adult Data
 
 ## Overview
 
-<!-- TODO -->
+I analyzed the UCI Adult (Census Income) dataset (Becker & Kohavi, `1996`) to test whether sex is associated with earning over $50K.
+Repository: https://github.com/intend-dev/MS-09-CAP-03-SA
 
-## Learning Outcomes
+## Repository
 
-<!-- TODO -->
+- `analysis.ipynb`: executed notebook with the analysis and figures
+- `Statistical_Analysis_Report.md` and `Statistical_Analysis_Report.pdf`: report and print-ready report
+- `figures/`: four PNG figures from the notebook
+- `adult.csv`: UCI Adult data
+- `requirements.txt`: pinned package versions
 
-- 
-- 
+## Reproduce
 
-## Tech Stack
+`requirements.txt` was generated with `pip freeze`, so install its pinned packages with `pip install -r requirements.txt` in an activated Python `3.12` environment.
+The `uv` commands below show the same setup with `uv`, the alternative used for this rebuild:
 
-<!-- TODO -->
-
-## Repo Structure
-
-```
-.
-├── data/
-├── MS-09-CAP-02-AIPF.ipynb
-├── requirements.txt
-└── README.md
-```
-
-## Environment Setup
-
-**Prerequisites**
-
-- Python 3.10+
-- pip
-
-**Install**
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+```powershell
+uv venv --python 3.12 .venv
+uv pip install --python .venv\Scripts\python.exe -r requirements.txt
+.venv\Scripts\python.exe -m jupyter nbconvert --to notebook --execute --inplace analysis.ipynb
 ```
 
-## Run / Usage
+If you regenerate `requirements.txt`, avoid PowerShell `>` because it writes UTF-16.
+The notebook reads `adult.csv` from the same folder and needs neither network access nor credentials.
 
-```bash
-jupyter lab
-```
+## Dataset
 
-## Testing
-
-<!-- TODO -->
+- [Adult (Census Income)](https://archive.ics.uci.edu/dataset/2/adult) from the UCI Machine Learning Repository
+- `32,561` rows and `15` columns
+- Missing-value columns: `workclass`, `occupation`, and `native-country`
+- `adult.csv` checksum: `3319b2fef796cbf96ef520c0daf10b9d90c96ab68a2db2589daefc4ed175d11a`
 
 ## License
 
-<!-- TODO -->
-
----
-
-## Reflections
-
-### Bias Awareness
-
-<!-- TODO -->
-
-### Future Integration Reflections (E.G)
-
-**How this workflow would change for an ML project:**
-
-<!-- TODO -->
-
-**Preparation of the data for a neural network:**
-
-<!-- TODO -->
-
-**Potential for agentic automation:**
-
-<!-- TODO -->
-
-### Summary & Interpretation
-
-<!-- TODO >
+Shared for portfolio and review purposes only, no reuse license is granted, and no license file is included.
+The dataset is public data from the UCI Machine Learning Repository under its own terms.
