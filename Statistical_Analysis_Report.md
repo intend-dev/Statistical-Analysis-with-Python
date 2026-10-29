@@ -40,19 +40,19 @@ That screening is the full data preparation, and its results shaped the choices 
 For the question itself I use a chi-square test of independence.
 The question asks whether `sex` and `income` are associated rather than how much one predicts the other.
 Both variables are categorical, which is exactly what the test expects.
-The p-values come from a standard approximation that is only reliable when the expected counts are large, and the expected counts here (checked in the Results) sit far above that level.
+The p-values come from a standard approximation that is only reliable when the expected counts are large (Agresti, `2007`), and the expected counts here (checked in the Results) sit far above that level.
 
 The null hypothesis (H0) is that `sex` and `income` are independent.
 The alternative (H1) is that they are associated. I fixed the significance level at alpha = `0.05` before the test.
 
 A chi-square test is non-directional: it can say whether an association exists, not which way it runs, so I read the direction of the difference from the observed counts and rates rather than expecting the test to supply them.
 A second assumption is that every row is a separate observation.
-That one is not fully true here: the source is a household survey, records can share a household, and the p-value therefore reads only as approximate.
+That one is not fully true here: the source is a household survey, records can share a household, and the p-value therefore reads only as approximate (Agresti, `2007`).
 The Limitations section takes up that concern.
 
 SciPy's `chi2_contingency` applies the Yates correction by default to a two-by-two table.
 I report the uncorrected Pearson statistic (the effect size builds on it) and note the corrected value in the Results.
-As an effect size I report Cramér's V, a `0`-to-`1` measure of the strength of an association (Cramér, `1946`).
+As an effect size I report Cramér's V, a `0`-to-`1` measure of the strength of an association (Ben-Shachar et al., `2023`).
 The p-value alone does not show that strength and is easy to misread as the probability that the null hypothesis is true, so the p-value and the effect size travel together (Greenland et al., `2016`).
 
 All computations used Python `3.12.14` with pandas `3.0.6`, NumPy `2.5.3`, and SciPy `1.18.1` (Virtanen et al., `2020`), and the figures used Matplotlib `3.11.2` and Seaborn `0.13.2`.
@@ -119,7 +119,7 @@ The contingency table is:
 | Female | `9,592` | `1,179` |
 | Male | `15,128` | `6,662` |
 
-The over-$50K rate is `19.63` percentage points higher for men than for women. Its `95%` confidence interval spans `[18.78, 20.48]`. The interval and the p-value both assume independent observations, so possible household clustering makes both approximate.
+The over-$50K rate is `19.63` percentage points higher for men than for women. Its `95%` confidence interval spans `[18.78, 20.48]` (Agresti, `2007`). The interval and the p-value both assume independent observations, so possible household clustering makes both approximate.
 
 ## Interpretation for a Non-Technical Audience
 
@@ -154,11 +154,16 @@ accounting for those issues, would be a useful next step.
 
 ## References
 
+Agresti, A. (`2007`). *An introduction to categorical data analysis* (2nd
+ed.). Wiley. https://doi.org/10.1002/0470114754
+
 Becker, B., & Kohavi, R. (`1996`). *Adult* [Dataset]. UCI Machine Learning
 Repository. https://doi.org/10.24432/C5XW20
 
-Cramér, H. (`1946`). *Mathematical methods of statistics*. Princeton
-University Press. https://doi.org/10.1515/9781400883868
+Ben-Shachar, M. S., Patil, I., Thériault, R., Wiernik, B. M., & Lüdecke, D.
+(`2023`). Phi, Fei, Fo, Fum: Effect sizes for categorical data that use the
+chi-squared statistic. *Mathematics*, 11(9), `1982`.
+https://doi.org/10.3390/math11091982
 
 Greenland, S., Senn, S. J., Rothman, K. J., Carlin, J. B., Poole, C., Goodman,
 S. N., & Altman, D. G. (`2016`). Statistical tests, P values, confidence
