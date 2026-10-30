@@ -8,7 +8,7 @@ Repository: https://github.com/intend-dev/Statistical-Analysis-with-Python
 ## Repository
 
 - `analysis.ipynb`: executed notebook with the analysis and figures
-- `Statistical_Analysis_Report.md` and `Statistical_Analysis_Report.pdf`: report and print-ready report
+- `module_summary.md` (Statistical_Analysis_Report) and `module_summary.pdf` (Statistical_Analysis_Report): report and print-ready report
 - `figures/`: four PNG figures from the notebook
 - `adult.csv`: UCI Adult data
 - `requirements.txt`: pinned package versions
